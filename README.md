@@ -1,10 +1,8 @@
 # MiCro
 # MiCro: Modeling Cross-Image Semantic Relationship Dependencies for Class-Incremental Semantic Segmentation in Remote Sensing Images
-This is the official PyTorch implementation of our work: "MiCro: Modeling Cross-Image Semantic Relationship Dependencies for Class-Incremental Semantic Segmentation in Remote Sensing Images" accepted at TGRS 2022.
+This is the official PyTorch implementation of our work: "MiCro: Modeling Cross-Image Semantic Relationship Dependencies for Class-Incremental Semantic Segmentation in Remote Sensing Images".
 
 In this paper, we present a novel approach and we define a new evaluation benchmark for class-incremental semantic segmentation in remote sensing images. We assess the performance of our method and previous state-of-the-art methods on ISPRS Vaihingen and Potsdam datasets. 
-
-![teaser](https://raw.githubusercontent.com/fcdl94/MiB/master/teaser.png)
 
 # Requirements
 This repository uses the following libraries:
@@ -55,17 +53,30 @@ For all details please follow the information provided using the help option.
 
 #### Example commands
 
-LwF on the 4-1 setting of ISPRS Vaihingen, step 0:
-> python -m torch.distributed.launch --nproc_per_node=2 run.py --data_root data --batch_size 12 --dataset vai --name LWF --task 4-1 --step 0 --lr 0.01 --epochs 40 --method LWF
+LwF on the 4-1 setting of ISPRS Vaihingen, 4-1LWF.sh:
+> python -m torch.distributed.launch --nproc_per_node=2 run.py --data_root data --batch_size 12 --dataset vaihingen --name LWF --task 4-1 --step 0 --lr 0.01 --epochs 40 --method LWF
 
 MiB on the 3-1s setting of ISPRS Vaihingen, step 2:
-> python -m torch.distributed.launch --nproc_per_node=2 run.py --data_root data --batch_size 12 --dataset vai --name MIB --task 3-1s --step 2 --lr 0.001 --epochs 40 --method MiB
+> python -m torch.distributed.launch --nproc_per_node=2 run.py --data_root data --batch_size 12 --dataset vaihingen --name MIB --task 3-1s --step 2 --lr 0.001 --epochs 40 --method MiB
 
-HCISS on 2-1s disjoint setting of ISPRS Potsdam, step 1:
-> python -m torch.distributed.launch --nproc_per_node=2 run.py --data_root data --batch_size 12 --dataset voc --name LWF-MC --task 15-5 --step 1 --lr 0.001 --epochs 30 --method LWF-MC
+HCISS on 2-1s setting of ISPRS Potsdam, step 1:
+> python -m torch.distributed.launch --nproc_per_node=2 run.py --data_root data --batch_size 12 --dataset potsdam --name HCISS --task 2-1s --step 1 --lr 0.001 --epochs 40 --method HCISS
 
-RW on 15-1 overlapped setting of VOC, step 1:
-> python -m torch.distributed.launch --nproc_per_node=2 run.py --data_root data --batch_size 12 --dataset voc --name LWF-MC --task 15-5s  --step 1 --lr 0.001 --epochs 30 --method RW
+MiCro on 1s setting of potsdam, step 4:
+> python -m torch.distributed.launch --nproc_per_node=2 run.py --data_root data --batch_size 12 --dataset potsdam --name MiCro --task 1s  --step 4 --lr 0.001 --epochs 40 --method MiCro
+
+
+You can also write .sh file as follow:
+LWF on 1s setting of vaihingen
+1s-vaihingen_LWF.sh  which contains:
+> CUDA_VISIBLE_DEVICES=7 python -m torch.distributed.launch --nproc_per_node=1 --master_port 14785 run.py  --batch_size 24 --dataset vaihingen --name LWF --task 1s --step 0 --lr=0.01  --epochs 40 --method LWF
+> CUDA_VISIBLE_DEVICES=7 python -m torch.distributed.launch --nproc_per_node=1 --master_port 14785 run.py  --batch_size 24 --dataset vaihingen --name LWF --task 1s --step 1 --lr=0.001 --epochs 40 --method LWF
+> CUDA_VISIBLE_DEVICES=7 python -m torch.distributed.launch --nproc_per_node=1 --master_port 14785 run.py  --batch_size 24 --dataset vaihingen --name LWF --task 1s --step 2 --lr=0.001 --epochs 40 --method LWF
+> CUDA_VISIBLE_DEVICES=7 python -m torch.distributed.launch --nproc_per_node=1 --master_port 14785 run.py  --batch_size 24 --dataset vaihingen --name LWF --task 1s --step 3 --lr=0.001 --epochs 40 --method LWF
+> CUDA_VISIBLE_DEVICES=7 python -m torch.distributed.launch --nproc_per_node=1 --master_port 14785 run.py  --batch_size 24 --dataset vaihingen --name LWF --task 1s --step 4 --lr=0.001 --epochs 40 --method LWF
+
+Then execute the command 
+> bash 1s-vaihingen_LWF.sh  
 
 Once you trained the model, you can see the result on tensorboard (we perform the test after the whole training)
  or you can test it by using the same script and parameters but using the command 
